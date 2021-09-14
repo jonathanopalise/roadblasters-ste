@@ -49,6 +49,7 @@ label_11d08:
 
     neg.w d1
     ext.l d1                 ; d1 is the shift value for the current line
+    add.l #16,d1
     move.l d1,d3             ; copy to d3
     and.b #15,d3             ; convert to skew value
     asr.w #1,d1              ; shift the source data pointer to the correct start point
