@@ -35,10 +35,11 @@ label_11d08:
     cmp.w #-1,d0
     beq.s exit_draw_road
 
+    add.b $3e608.l,d0
     move.l a0,a1
 
     moveq.l #0,d4
-    btst.l #7,d0
+    btst.l #6,d0
     beq not_alternate
     add.l #99*4,a1
 not_alternate:
