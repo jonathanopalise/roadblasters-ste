@@ -3,6 +3,9 @@
     include generated/symbols_0x80000.inc
 
 draw_road:
+    ; a5 is back buffer destination pointer
+    ; a6 is road source metadata
+
     lea $ffff8a20.w,a6
     move.w #8,(a6)+            ; source x increment 8a20
     move.w #-158,(a6)          ; source y increment 8a22
@@ -16,15 +19,11 @@ draw_road:
     move.w #20,(a6)           ; xcount 8a36
     addq.l #4,a6
     move.w #$0203,(a6)        ; hop/op 8a3a
-    ;lea $ffff8a38.w,a5      ; ycount
-    ;lea $ffff8a24.w,a3      ; source
-    ;lea $ffff8a3a.w,a2      ; hop/op
-    ;lea $ffff8a3c.w,a6      ; linenum (to start blitter)
-    ;moveq.l #1,d5 ; d5 is now free for use
+    lea $ffff8a38.w,a4      ; ycount
+    lea $ffff8a24.w,a3      ; source
+    lea $ffff8a3a.w,a2      ; hop/op
+    lea $ffff8a3c.w,a1      ; linenum (to start blitter)
     lea.l byte_offsets,a0
-    ;move.l a0,usp
-    ;lea.l gfx_data(pc),a0
-    ;move.l a0,d6
 
     lea $3d5a6,a6
     move.l $4686e,a5
