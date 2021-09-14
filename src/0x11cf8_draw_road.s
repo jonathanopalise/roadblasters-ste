@@ -42,6 +42,7 @@ label_11d08:
 
     move.w 2(a6),d1
     add.w 6(a6),d1
+    sub.w #90,d1
     muls d1,d0
     asr.l #8,d0
     move.w d0,d1
