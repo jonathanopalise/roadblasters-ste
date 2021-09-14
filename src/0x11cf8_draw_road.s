@@ -22,7 +22,7 @@ draw_road:
     lea $ffff8a38.w,a4      ; ycount
     lea $ffff8a24.w,a3      ; source
     lea $ffff8a3a.w,a2      ; hop/op
-    lea $ffff8a3c.w,a1      ; linenum (to start blitter)
+    ;lea $ffff8a3c.w,a1      ; linenum (to start blitter)
     lea.l byte_offsets,a0
 
     ; data starts at 3D5A6
@@ -34,6 +34,14 @@ label_11d08:
     move.w (a6),d0
     cmp.w #-1,d0
     beq.s exit_draw_road
+
+    move.l a0,a1
+
+    moveq.l #0,d4
+    btst.l #7,d0
+    beq not_alternate
+    add.l #99*4,a1
+not_alternate:
 
     ; then my stuff
 
@@ -56,13 +64,14 @@ label_11d08:
     and.b #$f8,d1
     or.w #$c080,d3           ; hog mode
 
-    move.l (a0),d2
+    move.l (a1),d2
+    add.l d4,d2
     sub.l d1,d2
 
     move.l d2,(a3)          ; source
     move.l a5,$ffff8a32.w     ; destination
     move.w #$4,(a4)           ; ycount
-    move.w d3,(a1)        ; blitter control
+    move.w d3,$ffff8a3c.w        ; blitter control
 
 label_11fec:
     addq.l #4,a0
