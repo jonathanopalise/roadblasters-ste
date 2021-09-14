@@ -1,0 +1,3 @@
+loadbin /home/jonathan/roadblasters-ste/bin/0x11d12_jump_to_draw_road_span.bin 0x11d12
+loadbin /home/jonathan/roadblasters-ste/bin/0x80000.bin 0x80000
+
