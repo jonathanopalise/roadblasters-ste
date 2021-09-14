@@ -9,10 +9,10 @@ BIN_DIR = bin/
 BIN_FILES = $(PATCHES) $(BIN_DIR)0x80000.bin
 
 PATCHES =\
-	$(BIN_DIR)0x11d12_jump_to_draw_road_span.bin
+	$(BIN_DIR)0x11cf8_draw_road.bin
 
 0X80000_DEPENDENCIES =\
-	$(SOURCE_DIR)draw_road_span.s
+	$(GENERATED_SOURCE_DIR)road.s
 
 default: check_dependencies all
 
@@ -34,8 +34,9 @@ all: $(GENERATED_SOURCE_DIR) $(BIN_FILES)
 $(PATCHES): $(BIN_DIR)%.bin: $(SOURCE_DIR)%.s $(GENERATED_SOURCE_DIR)symbols_0x80000.inc
 	$(VASM) $< -Fbin -o $@
 
-$(BIN_DIR)0x80000.bin: $(SOURCE_DIR)0x80000.s $(0X80000_DEPENDENCIES) $(GENERATED_SOURCE_DIR)symbols_0x80000.php
+$(BIN_DIR)0x80000.bin: $(SOURCE_DIR)0x80000.s $(0X80000_DEPENDENCIES) $(SOURCE_DIR)post_process_0x80000.php $(GENERATED_SOURCE_DIR)symbols_0x80000.php
 	$(VASM) $< -Fbin -o $@
+	$(PHP) $(SOURCE_DIR)post_process_0x80000.php $(GENERATED_SOURCE_DIR)symbols_0x80000.php $(BIN_DIR)0x80000.bin
 
 $(BIN_DIR)0x80000.o: $(SOURCE_DIR)0x80000.s $(0X80000_DEPENDENCIES) 
 	$(VASM) $< -Felf -o $@
@@ -48,6 +49,9 @@ $(GENERATED_SOURCE_DIR)symbols_0x80000.php: $(BIN_DIR)0x80000.o $(SOURCE_DIR)gen
 $(GENERATED_SOURCE_DIR)symbols_0x80000.inc: $(GENERATED_SOURCE_DIR)symbols_0x80000.php $(SOURCE_DIR)process_symbols.php
 	@echo "Process symbols..."
 	$(PHP) $(SOURCE_DIR)process_symbols.php $(GENERATED_SOURCE_DIR)symbols_0x80000.php > $(GENERATED_SOURCE_DIR)symbols_0x80000.inc
+
+$(GENERATED_SOURCE_DIR)road.s: $(SOURCE_DIR)generate_road.php $(GENERATED_SOURCE_DIR)
+	$(PHP) $< > $@
 
 $(GENERATED_SOURCE_DIR):
 	mkdir -p $@
