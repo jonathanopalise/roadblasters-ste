@@ -25,6 +25,7 @@ draw_road:
     lea $ffff8a3c.w,a1      ; linenum (to start blitter)
     lea.l byte_offsets,a0
 
+    ; data starts at 3D5A6
     lea $3d5a6,a6
     move.l $4686e,a5
     add.w #$6860,a5
@@ -36,25 +37,29 @@ label_11d08:
 
     ; then my stuff
 
-    ;ext.l d1                 ; d1 is the shift value for the current line
-    ;move.l d1,d3             ; copy to d3
-    ;and.b #15,d3             ; convert to skew value
-    ;asr.w d5,d1              ; shift the source data pointer to the correct start point
-    ;and.b #$f8,d1
+    move.w 4(a6),d0
+    move.w 2(a6),d1
+    add.w 6(a6),d1
+    muls d1,d0
+    asr.l #8,d0
+    add.w #88,d0
+    move.w d0,d1
 
-    ;lsr.w #2,d0              ; bring the road width value into a 0-255 range
-    ;and.w #$3fc,d0           ; bring the road width value into a 0-255 range
+    neg.w d1
+    ext.l d1                 ; d1 is the shift value for the current line
+    move.l d1,d3             ; copy to d3
+    and.b #15,d3             ; convert to skew value
+    asr.w #1,d1              ; shift the source data pointer to the correct start point
+    and.b #$f8,d1
+    or.w #$c080,d3           ; hog mode
 
-    move.l (a0),(a3)          ; source
+    move.l (a0),d2
+    sub.l d1,d2
+
+    move.l d2,(a3)          ; source
     move.l a5,$ffff8a32.w     ; destination
     move.w #$4,(a4)           ; ycount
-    move.w #$c080,(a1)          ; blitter control
-
-    ;move.l a5,a1
-    ;rept 20
-    ;move.l d1,(a1)+
-    ;move.l d1,(a1)+
-    ;endr
+    move.w d3,(a1)        ; blitter control
 
 label_11fec:
     addq.l #4,a0
