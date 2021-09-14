@@ -36,13 +36,28 @@ label_11d08:
 
     ; then my stuff
 
-    move.l a5,a1
-    rept 20
-    move.l d1,(a1)+
-    move.l d1,(a1)+
-    endr
+    ;ext.l d1                 ; d1 is the shift value for the current line
+    ;move.l d1,d3             ; copy to d3
+    ;and.b #15,d3             ; convert to skew value
+    ;asr.w d5,d1              ; shift the source data pointer to the correct start point
+    ;and.b #$f8,d1
+
+    ;lsr.w #2,d0              ; bring the road width value into a 0-255 range
+    ;and.w #$3fc,d0           ; bring the road width value into a 0-255 range
+
+    move.l (a0),(a3)          ; source
+    move.l a5,$ffff8a32.w     ; destination
+    move.w #$4,(a4)           ; ycount
+    move.b #$c0,(a1)          ; blitter control
+
+    ;move.l a5,a1
+    ;rept 20
+    ;move.l d1,(a1)+
+    ;move.l d1,(a1)+
+    ;endr
 
 label_11fec:
+    addq.l #4,a0
     sub.w #$a0,a5
     add.w #$c,a6
     bra label_11d08
