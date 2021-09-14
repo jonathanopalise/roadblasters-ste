@@ -48,7 +48,7 @@ label_11d08:
     move.l (a0),(a3)          ; source
     move.l a5,$ffff8a32.w     ; destination
     move.w #$4,(a4)           ; ycount
-    move.b #$c0,(a1)          ; blitter control
+    move.w #$c080,(a1)          ; blitter control
 
     ;move.l a5,a1
     ;rept 20
