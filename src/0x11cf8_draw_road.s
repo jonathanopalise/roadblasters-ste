@@ -38,11 +38,12 @@ label_11d08:
     ; then my stuff
 
     move.w 4(a6),d0
+    neg.w d0
+
     move.w 2(a6),d1
     add.w 6(a6),d1
     muls d1,d0
     asr.l #8,d0
-    add.w #88,d0
     move.w d0,d1
 
     neg.w d1
