@@ -34,9 +34,13 @@ more of memory, then load and run RoadBlasters from the Automation #84 disk imag
 (https://www.exxoshost.co.uk/atari/games/automation/AUTOMATION2015A.htm). Start the debugger (`AltGr + Pause`), then
 enter the following lines, replacing `<path-to-cloned-repository>` with the directory to which you've cloned the repo:
 
-- `loadbin <path-to-cloned-repository>/bin/0x11d12_jump_to_draw_road_span.bin 0x11d12`
+- `loadbin <path-to-cloned-repository>/bin/0x11cf8_draw_road.bin 0x11cf8`
 - `loadbin <path-to-cloned-repository>/bin/0x80000.bin 0x80000`
 
 Finally, enter `c` (for "continue") at the debugger prompt, and press the Enter key. The game should continue running,
-but with the updated code in place of the new code. If you see bombs or screen corruption, it's possible that
-something has gone wrong - raise an issue against the project and I'll help in any way I can.
+but with the updated code in place of the new code. Note that it's preferable to do the above while the game is on
+the title screen rather than in-game - this is because the patches overwrite game code that may be in the process of
+running, and this may cause the game to crash.
+
+If you continue to see bombs or screen corruption despite repeated efforts, it's possible that something has gone
+wrong - raise an issue against the project and I'll help in any way I can.
