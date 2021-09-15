@@ -44,8 +44,6 @@ label_11d08:
     add.l #99*4,a1
 not_alternate:
 
-    ; then my stuff
-
     move.w 4(a6),d0
     neg.w d0
 
