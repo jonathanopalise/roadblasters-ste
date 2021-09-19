@@ -34,6 +34,8 @@ more of memory, then load and run RoadBlasters from the Automation #84 disk imag
 (https://www.exxoshost.co.uk/atari/games/automation/AUTOMATION2015A.htm). Start the debugger (`AltGr + Pause`), then
 enter the following lines, replacing `<path-to-cloned-repository>` with the directory to which you've cloned the repo:
 
+- `loadbin <path-to-cloned-repository>/bin/0x70_vbl_vector.bin 0x70`
+- `loadbin <path-to-cloned-repository>/bin/0x11c70_jump_to_draw_background.bin 0x11c70`
 - `loadbin <path-to-cloned-repository>/bin/0x11cf8_draw_road.bin 0x11cf8`
 - `loadbin <path-to-cloned-repository>/bin/0x80000.bin 0x80000`
 

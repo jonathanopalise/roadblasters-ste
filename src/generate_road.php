@@ -1,14 +1,11 @@
 <?php
 
-const COLOUR_RED = 2;
-const COLOUR_WHITE = 15;
-const COLOUR_GREY = 5;
-const COLOUR_BROWN = 8;
-
-const COLOUR_ASPHALT = 0;
-const COLOUR_GRASS_1 = 11;
-const COLOUR_GRASS_2 = 12;
-const COLOUR_YELLOW = 6;
+const COLOUR_WHITE = 15;    // 1111
+const COLOUR_BROWN = 8;     // 1000
+const COLOUR_ASPHALT = 0;   // 0000
+const COLOUR_GRASS_1 = 11;  // 1011
+const COLOUR_GRASS_2 = 12;  // 1100
+const COLOUR_YELLOW = 6;    // 0110
 
 function convertPixelColourArrayToPlanarArray($pixel_colours) {
     $bitplanes = [

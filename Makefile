@@ -9,10 +9,14 @@ BIN_DIR = bin/
 BIN_FILES = $(PATCHES) $(BIN_DIR)0x80000.bin
 
 PATCHES =\
-	$(BIN_DIR)0x11cf8_draw_road.bin
+	$(BIN_DIR)0x11c70_jump_to_draw_background.bin\
+	$(BIN_DIR)0x11cf8_draw_road.bin\
+	$(BIN_DIR)0x70_vbl_vector.bin
 
 0X80000_DEPENDENCIES =\
-	$(GENERATED_SOURCE_DIR)road.s
+	$(GENERATED_SOURCE_DIR)road.s\
+	$(SOURCE_DIR)draw_background.s\
+	$(SOURCE_DIR)vbl.s
 
 default: check_dependencies all
 
