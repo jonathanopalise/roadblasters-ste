@@ -5,7 +5,7 @@ draw_background:
     move.l a6,usp
     lea $ffff8a20.w,a6
     move.w #2,(a6)+            ; source x increment 8a20
-    move.w #0,(a6)             ; source y increment 8a22
+    move.w #-2,(a6)             ; source y increment 8a22
     addq.l #6,a6               ; source address 8a24
     move.w #-1,(a6)+           ; endmask1 8a28
     move.w #-1,(a6)+           ; endmask2 8a2a
@@ -27,6 +27,7 @@ draw_background:
     moveq.l #0,d3
     move.w d2,d3
     and.w #15,d2 ; this is the skew value
+    or.w #$80,d2
     lsr.w #3,d3
 
     and.w #254,d3
