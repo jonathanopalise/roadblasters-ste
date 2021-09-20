@@ -5,13 +5,13 @@ draw_background:
     move.l a6,usp
     lea $ffff8a20.w,a6
     move.w #2,(a6)+            ; source x increment 8a20
-    move.w #-2,(a6)             ; source y increment 8a22
+    move.w #0,(a6)            ; source y increment 8a22
     addq.l #6,a6               ; source address 8a24
     move.w #-1,(a6)+           ; endmask1 8a28
     move.w #-1,(a6)+           ; endmask2 8a2a
     move.w #-1,(a6)+           ; endmask3 8a2c
     move.w #8,(a6)+            ; dest x increment 8a2e
-    move.w #0,(a6)             ; dest y increment 8x30
+    move.w #8,(a6)             ; dest y increment 8x30
     addq.l #6,a6               ; dest address 8a32
     move.w #20,(a6)            ; xcount 8a36
     addq.l #4,a6               ; ycount 8a38
