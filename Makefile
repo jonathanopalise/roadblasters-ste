@@ -9,6 +9,7 @@ BIN_DIR = bin/
 BIN_FILES = $(PATCHES) $(BIN_DIR)0x80000.bin
 
 PATCHES =\
+	$(BIN_DIR)0x11b8c_store_background_shift.bin\
 	$(BIN_DIR)0x11c70_jump_to_draw_background.bin\
 	$(BIN_DIR)0x11cf8_draw_road.bin\
 	$(BIN_DIR)0x70_vbl_vector.bin

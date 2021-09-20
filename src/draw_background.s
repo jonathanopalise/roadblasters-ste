@@ -1,3 +1,6 @@
+background_shift:
+    dc.w 0
+
 draw_background:
     move.l a6,usp
     lea $ffff8a20.w,a6
@@ -16,33 +19,50 @@ draw_background:
     move.b #0,3(a6)            ; skew etc 8a3d
     move.l usp,a6
 
+    addq.l #1,d0
+
+    ; we need to jump source address by background_shift >> 4
+
+    move.w background_shift,d2
+    moveq.l #0,d3
+    move.w d2,d3
+    and.w #15,d2 ; this is the skew value
+    lsr.w #3,d3
+
+    and.w #254,d3
+    sub.l d3,a1
+
     move.l a1,$ffff8a24.w      ; source address 8a24
     move.l a0,$ffff8a32.w      ; dest address 8a32
     move.w d0,$ffff8a38.w      ; ycount 8a3a
+    move.b d2,$ffff8a3d.w      ; skew 8a3d
     move.b #$c0,$ffff8a3c.w    ; blitter control 8a3c
 
     addq.l #2,a0
     lea $2828(a1),a1
 
-    move.l a2,$ffff8a24.w      ; source address 8a24
+    move.l a1,$ffff8a24.w      ; source address 8a24
     move.l a0,$ffff8a32.w      ; dest address 8a32
     move.w d0,$ffff8a38.w      ; ycount 8a3a
+    move.b d2,$ffff8a3d.w      ; skew 8a3d
     move.b #$c0,$ffff8a3c.w    ; blitter control 8a3c
 
     addq.l #2,a0
     lea $2828(a1),a1
 
-    move.l a3,$ffff8a24.w      ; source address 8a24
+    move.l a1,$ffff8a24.w      ; source address 8a24
     move.l a0,$ffff8a32.w      ; dest address 8a32
     move.w d0,$ffff8a38.w      ; ycount 8a3a
+    move.b d2,$ffff8a3d.w      ; skew 8a3d
     move.b #$c0,$ffff8a3c.w    ; blitter control 8a3c
 
     addq.l #2,a0
     lea $2828(a1),a1
 
-    move.l a4,$ffff8a24.w      ; source address 8a24
+    move.l a1,$ffff8a24.w      ; source address 8a24
     move.l a0,$ffff8a32.w      ; dest address 8a32
     move.w d0,$ffff8a38.w      ; ycount 8a3a
+    move.b d2,$ffff8a3d.w      ; skew 8a3d
     move.b #$c0,$ffff8a3c.w    ; blitter control 8a3c
 
     rts
