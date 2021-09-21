@@ -19,7 +19,7 @@ draw_background:
     move.b #0,3(a6)            ; skew etc 8a3d
     move.l usp,a6
 
-    addq.l #1,d0
+    addq.l #1,d0               ; increment ycount
 
     ; we draw the leftBackgroundOnRightSide first
     ; then we draw the rightBackgroundOnLeftSide
@@ -78,14 +78,8 @@ draw_background:
     tst.w d2
     beq no_right_bg_on_left_side
 
-    moveq.l #0,d3
     move.w d2,d3
-
-    moveq.l #0,d4
     move.w d2,d4
-
-    moveq.l #0,d5
-    move.w d2,d5
 
     and.w #15,d2               ; this is the skew value
     or.w #$80,d2               ; force extra source read, d2 is now skew|fxsr
@@ -96,50 +90,38 @@ draw_background:
     sub.l d3,a1
     lea 40(a1),a1              ; add 320 pixels in single bitplane, a1 is now base sourceAddress
 
-    lsr.w #4,d4                ; background_shift/16
-    addq.w #1,d4               ; (background_shift / 16) + 1
-    move.w d4,$ffff8a36.w      ; xcount 8a36
+    lsr.w #4,d4
+    addq.w #1,d4               ; numberOfWords = (background_shift >> 4) + 1
+    move.w d4,$ffff8a36.w      ; xcount 8a36 = numberOfWords
 
-    move.w #20,d6
-    sub.w d4,d6
-
-    move.w d6,d5
-    lsl.w #3,d5
+    move.w #20,d5
+    sub.w d4,d5
+    add.w d5,d5
+    move.w d5,$ffff8a22.w      ; source y increment 8a22 = (20-numberOfWords)*2
+    add.w d5,d5
+    add.w d5,d5
     add.w #8,d5                ; dest y increment = ((20-numberOfWords)*8)+8
     move.w d5,$ffff8a30.w      ; dest y increment 8a30
 
-    move.w d6,d5
-    add.w d5,d5                ; source y increment = (20-numberOfWords)*2
-    move.w d5,$ffff8a22.w      ; source y increment 8a22
-
+    macro draw_plane
     move.l a1,$ffff8a24.w      ; source address 8a24
     move.l a0,$ffff8a32.w      ; dest address 8a32
     move.w d0,$ffff8a38.w      ; ycount 8a3a
     move.b #$c0,$ffff8a3c.w    ; blitter control 8a3c
+    endm
 
+    macro advance_src_dst
     addq.l #2,a0
     lea $2828(a1),a1
+    endm
 
-    move.l a1,$ffff8a24.w      ; source address 8a24
-    move.l a0,$ffff8a32.w      ; dest address 8a32
-    move.w d0,$ffff8a38.w      ; ycount 8a3a
-    move.b #$c0,$ffff8a3c.w    ; blitter control 8a3c
-
-    addq.l #2,a0
-    lea $2828(a1),a1
-
-    move.l a1,$ffff8a24.w      ; source address 8a24
-    move.l a0,$ffff8a32.w      ; dest address 8a32
-    move.w d0,$ffff8a38.w      ; ycount 8a3a
-    move.b #$c0,$ffff8a3c.w    ; blitter control 8a3c
-
-    addq.l #2,a0
-    lea $2828(a1),a1
-
-    move.l a1,$ffff8a24.w      ; source address 8a24
-    move.l a0,$ffff8a32.w      ; dest address 8a32
-    move.w d0,$ffff8a38.w      ; ycount 8a3a
-    move.b #$c0,$ffff8a3c.w    ; blitter control 8a3c
+    draw_plane
+    advance_src_dst
+    draw_plane
+    advance_src_dst
+    draw_plane
+    advance_src_dst
+    draw_plane
 
 no_right_bg_on_left_side:
 
