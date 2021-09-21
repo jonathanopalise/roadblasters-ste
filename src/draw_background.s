@@ -5,13 +5,13 @@ draw_background:
     move.l a6,usp
     lea $ffff8a20.w,a6
     move.w #2,(a6)+            ; source x increment 8a20
-    move.w #0,(a6)            ; source y increment 8a22
+    move.w #0,(a6)             ; source y increment 8a22
     addq.l #6,a6               ; source address 8a24
     move.w #-1,(a6)+           ; endmask1 8a28
     move.w #-1,(a6)+           ; endmask2 8a2a
     move.w #-1,(a6)+           ; endmask3 8a2c
     move.w #8,(a6)+            ; dest x increment 8a2e
-    move.w #8,(a6)             ; dest y increment 8x30
+    move.w #8,(a6)             ; dest y increment 8a30
     addq.l #6,a6               ; dest address 8a32
     move.w #20,(a6)            ; xcount 8a36
     addq.l #4,a6               ; ycount 8a38
@@ -43,6 +43,7 @@ draw_background:
     ;     - words = (bgShift >> 4) + 1
     ;     - sourceOffsetChange = (existing calculation)
     ;     - also need to change sourceyadd - subtract number of words * 2
+    ;     - endmask3 = lookup_table[skew] - remember to multiply
     ;
     ;     bgShift   skew   words endmask3(or alternative)   description
     ;     0         0      0     (not applicable)           draw nothing
@@ -74,15 +75,42 @@ draw_background:
     ;         (might need to populate endmask1 as well if only one word being written)
 
     move.w background_shift,d2
+    tst.w d2
+    beq no_right_bg_on_left_side
+
     moveq.l #0,d3
     move.w d2,d3
+
+    moveq.l #0,d4
+    move.w d2,d4
+
+    moveq.l #0,d5
+    move.w d2,d5
+
     and.w #15,d2               ; this is the skew value
-    or.w #$80,d2               ; force extra source read
+    or.w #$80,d2               ; force extra source read, d2 is now skew|fxsr
+    move.b d2,$ffff8a3d.w      ; skew 8a3d
+
     lsr.w #3,d3                ; bring background shift into a 0-39 range
     and.w #254,d3              ; round background shift to the nearest word
     sub.l d3,a1
+    lea 40(a1),a1              ; add 320 pixels in single bitplane, a1 is now base sourceAddress
 
-    move.b d2,$ffff8a3d.w      ; skew 8a3d
+    lsr.w #4,d4                ; background_shift/16
+    addq.w #1,d4               ; (background_shift / 16) + 1
+    move.w d4,$ffff8a36.w      ; xcount 8a36
+
+    move.w #20,d6
+    sub.w d4,d6
+
+    move.w d6,d5
+    lsl.w #3,d5
+    add.w #8,d5                ; dest y increment = ((20-numberOfWords)*8)+8
+    move.w d5,$ffff8a30.w      ; dest y increment 8a30
+
+    move.w d6,d5
+    add.w d5,d5                ; source y increment = (20-numberOfWords)*2
+    move.w d5,$ffff8a22.w      ; source y increment 8a22
 
     move.l a1,$ffff8a24.w      ; source address 8a24
     move.l a0,$ffff8a32.w      ; dest address 8a32
@@ -112,6 +140,8 @@ draw_background:
     move.l a0,$ffff8a32.w      ; dest address 8a32
     move.w d0,$ffff8a38.w      ; ycount 8a3a
     move.b #$c0,$ffff8a3c.w    ; blitter control 8a3c
+
+no_right_bg_on_left_side:
 
     rts
 
