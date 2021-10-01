@@ -1,8 +1,4 @@
-    ORG $11cf8
 
-    include generated/symbols_0x80000.inc
-
-draw_road:
     ; a5 is back buffer destination pointer
     ; a6 is road source metadata
 
@@ -25,20 +21,20 @@ draw_road:
     ;lea $ffff8a3c.w,a1      ; linenum (to start blitter)
     lea.l byte_offsets,a0
 
-    ; data starts at 3D5A6
-    lea $3d5a6,a6
-    move.l $4686e,a5
-    add.w #$6860,a5
+    lea     l0439,a6
+    movea.l l04a9,a5
+    adda.w  #$6860,a5
 
 label_11d08:
     move.w (a6),d0
     cmp.w #-1,d0
     beq.s exit_draw_road
 
-    add.b $3e608.l,d0
+    add.b l0445,d0       ; TODO: find correct address
     move.l a0,a1
+    ;add.l #gfx_data,a1
 
-    moveq.l #0,d4
+    ;lea.l gfx_data,d4
     btst.l #6,d0
     beq not_alternate
     add.l #99*4,a1
@@ -64,7 +60,8 @@ not_alternate:
     or.w #$c080,d3           ; hog mode
 
     move.l (a1),d2
-    add.l d4,d2
+    lea gfx_data,a1
+    add.l a1,d2
     sub.l d1,d2
 
     move.l d2,(a3)          ; source
@@ -79,6 +76,5 @@ label_11fec:
     bra label_11d08
 
 exit_draw_road:
-    jmp $11ff8 
 
 
