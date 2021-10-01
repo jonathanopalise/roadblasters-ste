@@ -5356,11 +5356,10 @@ l02e1	move.l	d3,(a1)+
 l02e2	rts
 
 draw_road:
-    ; TODO: 11cf8 goes here
-	include	draw_road.s
+	include	draw_blitter_road.s
 
 l02f2:
-    move.w	l04c2,d0 ;TODO: this move.w corresponds to exit_draw_road in 11cf8 patch
+    move.w	l04c2,d0
 	mulu	#$a0,d0
 	add.l	l04a9,d0
 	movea.l	d0,a1
