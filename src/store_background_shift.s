@@ -1,7 +1,3 @@
-    ORG $11b8c
-
-    include generated/symbols_0x80000.inc
-
     move.w background_shift,d0
     add.w d1,d0
 

@@ -1,7 +1,3 @@
-background_shift:
-    dc.w 0
-
-draw_background:
     move.l a6,usp
     lea $ffff8a20.w,a6
     move.w #2,(a6)+            ; source x increment 8a20
@@ -66,4 +62,8 @@ draw_background:
     move.b #$c0,$ffff8a3c.w    ; blitter control 8a3c
 
     rts
+
+background_shift:
+    dc.w 0
+
 

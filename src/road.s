@@ -3285,7 +3285,7 @@ l01de	move.l	#$ffffffff,l04bb
 	bsr	l02dd
 	bsr	l032d
 	bsr	l0330
-	bsr	l02e3
+	bsr	draw_road
 	bsr	l0303
 	move.l	#l04a9,l046b
 	bsr	l0214
@@ -3454,7 +3454,7 @@ l01f4	tst.w	l04ab
 	move.l	#l04a9,l046b
 	bsr	l0330
 	move.w	#9,l0466
-	bsr	l02e3
+	bsr	draw_road
 	move.w	#$b,l0466
 	bsr	l0245
 	bsr	l0303
@@ -5291,74 +5291,8 @@ l02d2	bsr.b	l02d1
 	move.w	l0486,d1
 	move.w	d0,l0486
 	sub.w	d0,d1
-    ; TODO: 11b8c code goes here
-    ; TODO: NOT NEEDED BLOCK 1 START
-	beq	l02dc
-	bmi	l02d7
-	movea.l	2(a6),a1
-	adda.l	#l0414,a1
-	cmp.w	#$11,d1
-	bcs.b	l02d3
-	moveq	#$10,d1
-l02d3	moveq	#3,d5
-l02d4	movea.l	a1,a2
-	move.w	(a6),d0
-l02d5	movea.l	a1,a0
-	moveq	#9,d4
-	clr.l	d2
-l02d6	move.w	(a1),d2
-	move.w	d2,d3
-	swap	d3
-	ror.l	d1,d2
-	move.w	d2,(a1)+
-	move.w	(a1),d3
-	move.w	d3,d2
-	swap	d2
-	ror.l	d1,d3
-	move.w	d3,(a1)+
-	dbf	d4,l02d6
-	clr.w	d2
-	ror.l	d1,d2
-	or.w	d2,(a0)
-	dbf	d0,l02d5
-	movea.l	a2,a1
-	lea	10280(a1),a1
-	dbf	d5,l02d4
-	bra	l02dc
-l02d7	neg.w	d1
-	movea.l	2(a6),a1
-	adda.l	#l0414,a1
-	adda.w	#$28,a1
-	cmp.w	#$11,d1
-	bcs.b	l02d8
-	move.w	#$10,d1
-l02d8	moveq	#3,d5
-l02d9	movea.l	a1,a2
-	move.w	(a6),d0
-l02da	movea.l	a1,a0
-	moveq	#9,d4
-	clr.l	d2
-l02db	move.w	-(a1),d2
-	move.w	d2,d3
-	swap	d3
-	rol.l	d1,d2
-	move.w	d2,(a1)
-	move.w	-(a1),d3
-	move.w	d3,d2
-	swap	d2
-	rol.l	d1,d3
-	move.w	d3,(a1)
-	dbf	d4,l02db
-	adda.w	#$50,a1
-	clr.w	d2
-	rol.l	d1,d2
-	or.w	d2,-(a0)
-	dbf	d0,l02da
-	movea.l	a2,a1
-	lea	10280(a1),a1
-	dbf	d5,l02d9
-    ; TODO: NOT NEEDED BLOCK 1 END
-l02dc	rts
+
+    include store_background_shift.s
 
 l02dd	bsr	l02d1
 	move.w	l04c2,d2
@@ -5373,26 +5307,8 @@ l02dd	bsr	l02d1
 	lea	10280(a1),a2
 	lea	20560(a1),a3
 	lea	30840(a1),a4
-l02de	moveq	#4,d1
-l02df	move.w	(a1)+,(a0)+
-	move.w	(a2)+,(a0)+
-	move.w	(a3)+,(a0)+
-	move.w	(a4)+,(a0)+
-	move.w	(a1)+,(a0)+
-	move.w	(a2)+,(a0)+
-	move.w	(a3)+,(a0)+
-	move.w	(a4)+,(a0)+
-	move.w	(a1)+,(a0)+
-	move.w	(a2)+,(a0)+
-	move.w	(a3)+,(a0)+
-	move.w	(a4)+,(a0)+
-	move.w	(a1)+,(a0)+
-	move.w	(a2)+,(a0)+
-	move.w	(a3)+,(a0)+
-	move.w	(a4)+,(a0)+
-	dbf	d1,l02df
-	dbf	d0,l02de
-	rts
+
+    include draw_blitter_background.s
 
 l02e0	lea	l02e2,a4
 	suba.w	d0,a4
@@ -5439,11 +5355,12 @@ l02e1	move.l	d3,(a1)+
 	move.l	d4,(a1)+
 l02e2	rts
 
-l02e3
+draw_road:
     ; TODO: 11cf8 goes here
 	include	draw_road.s
 
-l02f2	move.w	l04c2,d0 ;TODO: this move.w corresponds to exit_draw_road in 11cf8 patch
+l02f2:
+    move.w	l04c2,d0 ;TODO: this move.w corresponds to exit_draw_road in 11cf8 patch
 	mulu	#$a0,d0
 	add.l	l04a9,d0
 	movea.l	d0,a1

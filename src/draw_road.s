@@ -1,4 +1,3 @@
-
     ; a5 is back buffer destination pointer
     ; a6 is road source metadata
 
@@ -30,7 +29,7 @@ label_11d08:
     cmp.w #-1,d0
     beq.s exit_draw_road
 
-    add.b l0445,d0       ; TODO: find correct address
+    add.b l0445,d0
     move.l a0,a1
     ;add.l #gfx_data,a1
 
