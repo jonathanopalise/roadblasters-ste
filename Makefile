@@ -19,6 +19,6 @@ clean:
 all: $(BIN_DIR)road.prg
 
 $(BIN_DIR)road.prg: $(SOURCE_DIR)road.s
-	$(VASM) $(SOURCE_DIR)road.s -Felf -o $(BIN_DIR)road.o
+	$(VASM) -devpac $(SOURCE_DIR)road.s -Felf -o $(BIN_DIR)road.o
 	$(VLINK) -s -S -x -b ataritos $(BIN_DIR)road.o -o $@
-	$(UPX) -9 $@
+	rm $(BIN_DIR)road.o
