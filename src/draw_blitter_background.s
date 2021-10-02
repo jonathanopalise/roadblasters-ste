@@ -97,17 +97,17 @@
 
 
 left_bg_on_right_side:
-    move.w background_shift,d2
-    move.w d2,d3
+    move.w background_shift,d2 ; background shift into d2
+    move.w d2,d3               ; duplicate into d3
     moveq.l #0,d5
-    move.w d2,d5
+    move.w d2,d5               ; duplicate into d5 (and clear top word)
     and.w #$f,d2
     or.w #$80,d2
     move.b d2,$ffff8a3d.w      ; skew 8a3d
 
     move.w #20,d4
     lsr.w #4,d3
-    sub.w d3,d4                ; number of words
+    sub.w d3,d4                ; number of words = 20 - (backgroundShift >> 4)
     move.w d4,$ffff8a36.w      ; xcount 8a36 = numberOfWords
 
     move.l a0,-(a7)            ; save destination address
@@ -115,12 +115,17 @@ left_bg_on_right_side:
 
     lsr.w #1,d5
     and.w #$f8,d5
-    add.l d5,a0    
+    add.l d5,a0                ; add to destination: (backgroundShift >> 1) & 0xf8
 
-    move.w #160,d5
-    add.w d4,d4
+    move.w #20,d5
     sub.w d4,d5
+    add.w d5,d5
     move.w d5,$ffff8a22.w      ; source y increment 8a22 = (20-numberOfWords)*2
+
+    add.w d5,d5
+    add.w d5,d5
+    add.w #8,d5                ; dest y increment = ((20-numberOfWords)*8)+8
+    move.w d5,$ffff8a30.w      ; dest y increment 8a30
 
     macro draw_plane
     move.l a1,$ffff8a24.w      ; source address 8a24
