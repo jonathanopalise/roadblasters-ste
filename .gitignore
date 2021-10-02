@@ -3,4 +3,3 @@
 *.o
 src/generated/*
 bin/
-gamefiles/s

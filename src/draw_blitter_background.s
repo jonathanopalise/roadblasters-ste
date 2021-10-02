@@ -66,10 +66,88 @@
     ; if backgroundShift = 0, only draw leftBgOnRightSide then end
     ; if skew > 0:
     ;     we need to draw an additional word of the rightBackgroundOnLeftSide
-    ;     rightBackgroundOnLeftSide will overleft leftBackgroundOnRightSide
+    ;     rightBackgroundOnLeftSide will overlap leftBackgroundOnRightSide
     ;     there will need to be an endmask3 value on rightBackgroundOnLeftSide that makes sure only the first "skew" left bits are written
     ;         (might need to populate endmask1 as well if only one word being written)
 
+
+    ; leftBgOnRightSide:
+    ;
+    ; bgShift   skew   words   addToDestination
+    ; 0         0      20      0
+    ; 1         1      20      0
+    ; 2         2      20      0
+    ; ....
+    ; 14        14     20      0
+    ; 15        15     20      0
+    ; 16        0      19      8
+    ; 17        1      19      8
+    ; 18        2      19      8
+    ; ....
+    ; 30        14     19      8
+    ; 31        15     19      8
+    ; 32        0      18      16
+    ; 33        1      18      16
+    ;
+    ; calculations:
+    ;   - skew = bgShift & 15
+    ;   - words = 20 - (bgShift >> 4)
+    ;   - addToDestination = (bgShift >> 1) & 0xf8
+    ;   - sourceyadd = 160 - (number of words * 2)?
+
+
+left_bg_on_right_side:
+    move.w background_shift,d2
+    move.w d2,d3
+    moveq.l #0,d5
+    move.w d2,d5
+    and.w #$f,d2
+    or.w #$80,d2
+    move.b d2,$ffff8a3d.w      ; skew 8a3d
+
+    move.w #20,d4
+    lsr.w #4,d3
+    sub.w d3,d4                ; number of words
+    move.w d4,$ffff8a36.w      ; xcount 8a36 = numberOfWords
+
+    move.l a0,-(a7)            ; save destination address
+    move.l a1,-(a7)            ; save destination address
+
+    lsr.w #1,d5
+    and.w #$f8,d5
+    add.l d5,a0    
+
+    move.w #160,d5
+    add.w d4,d4
+    sub.w d4,d5
+    move.w d5,$ffff8a22.w      ; source y increment 8a22 = (20-numberOfWords)*2
+
+    macro draw_plane
+    move.l a1,$ffff8a24.w      ; source address 8a24
+    move.l a0,$ffff8a32.w      ; dest address 8a32
+    move.w d0,$ffff8a38.w      ; ycount 8a3a
+    move.b #$c0,$ffff8a3c.w    ; blitter control 8a3c
+    endm
+
+    macro advance_src_dst
+    addq.l #2,a0
+    lea $2828(a1),a1
+    endm
+
+    draw_plane
+    advance_src_dst
+    draw_plane
+    advance_src_dst
+    draw_plane
+    advance_src_dst
+    draw_plane
+
+    ; end of left_bg_on_right_side
+
+    move.l (a7)+,a1            ; restore destination address
+    move.l (a7)+,a0            ; restore destination address
+
+right_bg_on_left_side:
     move.w background_shift,d2
     tst.w d2
     beq no_right_bg_on_left_side
@@ -98,18 +176,6 @@
     add.w d5,d5
     add.w #8,d5                ; dest y increment = ((20-numberOfWords)*8)+8
     move.w d5,$ffff8a30.w      ; dest y increment 8a30
-
-    macro draw_plane
-    move.l a1,$ffff8a24.w      ; source address 8a24
-    move.l a0,$ffff8a32.w      ; dest address 8a32
-    move.w d0,$ffff8a38.w      ; ycount 8a3a
-    move.b #$c0,$ffff8a3c.w    ; blitter control 8a3c
-    endm
-
-    macro advance_src_dst
-    addq.l #2,a0
-    lea $2828(a1),a1
-    endm
 
     draw_plane
     advance_src_dst
